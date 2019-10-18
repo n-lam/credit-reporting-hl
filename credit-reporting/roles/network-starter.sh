@@ -26,4 +26,4 @@ docker kill cliBorrower cliLender logspout || true
 #
 # Good to start the applications in other terminals
 #
-"${DIR}/organization/magnetocorp/configuration/cli/monitordocker.sh" net_basic
+"${DIR}/organization/lender/configuration/cli/monitordocker.sh" net_basic
