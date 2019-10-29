@@ -6,13 +6,13 @@ const State = require('./../ledger-api/state.js');
 // Enumerate commercial paper state values
 const cpState = {
     SUBMITTED: 1,
-    VERIFIED: 2,
+    VERIFIED: 2
 };
 
 class BorrowerIdentity extends State {
 
     constructor(obj) {
-        super(CommercialPaper.getClass(), [obj.surname, obj.givenNames, obj.birthDate, obj.driverLicenseNo]);
+        super(BorrowerIdentity.getClass(), [obj.surname, obj.givenNames, obj.birthDate, obj.driverLicenseNo]);
         Object.assign(this, obj);
     }
 
@@ -52,7 +52,7 @@ class BorrowerIdentity extends State {
      * Factory method to create a commercial paper object
      */
     static createInstance(surname, givenNames, birthDate, currentAddress, previousAddress1, previousAddress2, latestEmployer, driverLicenseNo) {
-        return new CommercialPaper({surname, givenNames, birthDate, currentAddress, previousAddress1, previousAddress2, latestEmployer, driverLicenseNo });
+        return new BorrowerIdentity({surname, givenNames, birthDate, currentAddress, previousAddress1, previousAddress2, latestEmployer, driverLicenseNo });
     }
 
     static getClass() {
