@@ -22,23 +22,23 @@ class Loan extends State {
     }
 
     setRequested() {
-        this.currentState = REQUESTED;
+        this.currentState = cpState.REQUESTED;
     }
 
     setApproved() {
-        this.currentState = APPROVED;
+        this.currentState = cpState.APPROVED;
     }
 
     setRejected() {
-        this.currentState = REJECTED;
+        this.currentState = cpState.REJECTED;
     }
 
     setRepaid() {
-        this.currentState = REPAID;
+        this.currentState = cpState.REPAID;
     }
 
     setDefault() {
-        this.currentState = DEFAULT;
+        this.currentState = cpState.DEFAULT;
     }
 
     isRequested() {
@@ -69,19 +69,12 @@ class Loan extends State {
         return Buffer.from(JSON.stringify(this));
     }
 
-    /**
-     * Deserialize a state data to commercial paper
-     * @param {Buffer} data to form back into the object
-     */
     static deserialize(data) {
         return State.deserializeClass(data, Loan);
     }
 
-    /**
-     * Factory method to create a commercial paper object
-     */
-    static createInstance(ctx, issuer, borrower, original_amount, application_date, repayment_period, repayment_amount) {
-        return new Loan({ctx, issuer, borrower, original_amount, application_date, repayment_period, repayment_amount});
+    static createInstance(issuer, borrower, original_amount, application_date, repayment_period, repayment_amount) {
+        return new Loan({issuer, borrower, original_amount, application_date, repayment_period, repayment_amount});
     }
 
 

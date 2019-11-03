@@ -41,7 +41,6 @@ class LoanContract extends Contract {
     async request(ctx, issuer, borrower, original_amount, application_date, repayment_period, repayment_amount) {
 
         let loan = Loan.createInstance(
-            ctx, 
             issuer, 
             borrower, 
             original_amount, 

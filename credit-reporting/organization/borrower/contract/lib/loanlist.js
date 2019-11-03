@@ -1,7 +1,3 @@
-/*
-SPDX-License-Identifier: Apache-2.0
-*/
-
 'use strict';
 
 // Utility class for collections of ledger states --  a state list
