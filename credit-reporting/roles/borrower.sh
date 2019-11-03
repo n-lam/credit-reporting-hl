@@ -17,23 +17,12 @@ echo "
 
  Install and Instantiate a Smart Contract as 'Lender'
 
- 
- Run Applications in either langauage (can be different from the Smart Contract)
-
  JavaScript Client Aplications:
 
  To add identity to the wallet:   node addToWallet.js
-    < issue the paper run as Lender>
- To buy the paper             :   node buy.js
- To redeem the paper          :   node redeem.js
-
- Java Client Applications:
-
- (remember to build the Java first with 'mvn clean package')
-
-    < issue the paper run as Lender>
- To buy the paper             :   node buy.js
- To redeem the paper          :   node redeem.js
+ To request a loan            :   node request.js
+ To repay a loan              :   node repay.js
+ To check loan applications   :   node checkLoans.js
 
 "
-echo "Suggest that you change to this dir>  cd ${DIR}/organization/Borrower"
+echo "Suggest that you change to this dir>  cd ${DIR}/organization/borrower"

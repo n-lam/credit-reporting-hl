@@ -1,6 +1,4 @@
 #!/bin/bash
-#
-# SPDX-License-Identifier: Apache-2.0
 
 function _exit(){
     printf "Exiting:%s\n" "$1"
@@ -20,10 +18,4 @@ docker kill cliBorrower cliLender logspout || true
 ./teardown.sh || true
 ./start.sh || _exit "Failed to start Fabric"
 
-
-
-# -------------------------------------------------------------------------------
-#
-# Good to start the applications in other terminals
-#
 "${DIR}/organization/lender/configuration/cli/monitordocker.sh" net_basic
