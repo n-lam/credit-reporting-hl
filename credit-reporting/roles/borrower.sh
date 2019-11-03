@@ -15,7 +15,7 @@ docker-compose -f docker-compose.yml up -d cliBorrower
 
 echo "
 
- Install and Instantiate a Smart Contract as 'Lender'
+ Install and Instantiate a Smart Contract as 'Borrower'
 
  JavaScript Client Aplications:
 
