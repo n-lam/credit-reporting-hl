@@ -17,7 +17,7 @@ class Loan extends State {
             [obj.issuer, 
             obj.borrower, 
             obj.original_amount, 
-            obj.settlement_date]);
+            obj.application_date]);
         Object.assign(this, obj);
     }
 
@@ -80,8 +80,8 @@ class Loan extends State {
     /**
      * Factory method to create a commercial paper object
      */
-    static createInstance(issuer, borrower, original_amount, remaining_amount, settlement_date, last_repayment, repayment_period, repayment_amount) {
-        return new Loan({issuer, borrower, original_amount, remaining_amount, settlement_date, last_repayment, repayment_period, repayment_amount});
+    static createInstance(ctx, issuer, borrower, original_amount, remaining_amount, application_date, repayment_period, repayment_amount) {
+        return new Loan({ctx, issuer, borrower, original_amount, remaining_amount, application_date, repayment_period, repayment_amount});
     }
 
 

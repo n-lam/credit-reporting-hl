@@ -27,6 +27,12 @@ class LoanList extends StateList {
     async updateLoan(loan) {
         return this.updateState(loan);
     }
+
+    async getAllLoans() {
+        this.supportedClasses.forEach(element => {
+            console.log(element);
+        });
+    }
 }
 
 

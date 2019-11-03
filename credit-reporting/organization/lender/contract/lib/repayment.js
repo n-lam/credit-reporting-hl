@@ -63,8 +63,8 @@ class Repayment extends State {
     /**
      * Factory method to create a commercial paper object
      */
-    static createInstance(loanKey, amount, timestamp, previousRepayment, expectedAmount, expectedDate) {
-        return new Repayment({loanKey, amount, timestamp, previousRepayment, expectedAmount, expectedDate});
+    static createInstance(ctx, loanKey, amount, timestamp, previousRepayment, expectedAmount, expectedDate) {
+        return new Repayment({ctx, loanKey, amount, timestamp, previousRepayment, expectedAmount, expectedDate});
     }
 
     static getClass() {

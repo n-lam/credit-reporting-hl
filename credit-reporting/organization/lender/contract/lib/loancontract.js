@@ -24,10 +24,6 @@ class LoanContext extends Context {
 
 }
 
-/**
- * Define commercial paper smart contract by extending Fabric Contract class
- *
- */
 class LoanContract extends Contract {
 
     constructor() {
@@ -42,93 +38,55 @@ class LoanContract extends Contract {
         console.log('Instantiate the contract');
     }
 
-    async issue() {
+    async request(ctx, issuer, borrower, original_amount, remaining_amount, settlement_date, repayment_period, repayment_amount) {
 
-        // create an instance of the paper
-        let loan = Loan.createInstance(issuer, paperNumber, issueDateTime, maturityDateTime, faceValue);
+        let loan = Loan.createInstance(ctx, 
+            issuer, 
+            borrower, 
+            original_amount, 
+            remaining_amount, 
+            settlement_date,
+            repayment_period, 
+            repayment_amount
+        );
 
-        // Smart contract, rather than paper, moves paper into ISSUED state
-        paper.setIssued();
+        loan.setRequested();
 
-        // Newly issued paper is owned by the issuer
-        paper.setOwner(issuer);
+        await ctx.loanList.addLoan(loan);
 
-        // Add the paper to the list of all similar commercial papers in the ledger world state
-        await ctx.paperList.addPaper(paper);
-
-        // Must return a serialized paper to caller of smart contract
-        return paper;
+        return loan;
     }
 
-    /**
-     * Buy commercial paper
-     *
-     * @param {Context} ctx the transaction context
-     * @param {String} issuer commercial paper issuer
-     * @param {Integer} paperNumber paper number for this issuer
-     * @param {String} currentOwner current owner of paper
-     * @param {String} newOwner new owner of paper
-     * @param {Integer} price price paid for this paper
-     * @param {String} purchaseDateTime time paper was purchased (i.e. traded)
-    */
-    async buy(ctx, issuer, paperNumber, currentOwner, newOwner, price, purchaseDateTime) {
-
-        // Retrieve the current paper using key fields provided
-        let paperKey = CommercialPaper.makeKey([issuer, paperNumber]);
-        let paper = await ctx.paperList.getPaper(paperKey);
-
-        // Validate current owner
-        if (paper.getOwner() !== currentOwner) {
-            throw new Error('Paper ' + issuer + paperNumber + ' is not owned by ' + currentOwner);
-        }
-
-        // First buy moves state from ISSUED to TRADING
-        if (paper.isIssued()) {
-            paper.setTrading();
-        }
-
-        // Check paper is not already REDEEMED
-        if (paper.isTrading()) {
-            paper.setOwner(newOwner);
-        } else {
-            throw new Error('Paper ' + issuer + paperNumber + ' is not trading. Current state = ' +paper.getCurrentState());
-        }
-
-        // Update the paper
-        await ctx.paperList.updatePaper(paper);
-        return paper;
+    async getReport(ctx) {
+        ctx.loanList.getAllLoans();
     }
 
-    /**
-     * Redeem commercial paper
-     *
-     * @param {Context} ctx the transaction context
-     * @param {String} issuer commercial paper issuer
-     * @param {Integer} paperNumber paper number for this issuer
-     * @param {String} redeemingOwner redeeming owner of paper
-     * @param {String} redeemDateTime time paper was redeemed
-    */
-    async redeem(ctx, issuer, paperNumber, redeemingOwner, redeemDateTime) {
+    async approve(ctx, issuer, borrower, original_amount, application_date) {
+        let loanKey = Loan.makeKey([issuer, borrower, original_amount, application_date]);
+        let loan = await ctx.loanList.getLoan(loanKey);
 
-        let paperKey = CommercialPaper.makeKey([issuer, paperNumber]);
-
-        let paper = await ctx.paperList.getPaper(paperKey);
-
-        // Check paper is not REDEEMED
-        if (paper.isRedeemed()) {
-            throw new Error('Paper ' + issuer + paperNumber + ' already redeemed');
-        }
-
-        // Verify that the redeemer owns the commercial paper before redeeming it
-        if (paper.getOwner() === redeemingOwner) {
-            paper.setOwner(paper.getIssuer());
-            paper.setRedeemed();
+        if (loan.isRequested()) {
+            loan.setApproved();
         } else {
-            throw new Error('Redeeming owner does not own paper' + issuer + paperNumber);
+            throw new Error('Loan application ' + issuer + borrower + ' is not in a valid state');
         }
 
-        await ctx.paperList.updatePaper(paper);
-        return paper;
+        await ctx.loanList.updateLoan(loan);
+        return loan;
+    }
+
+    async reject(ctx, issuer, borrower, original_amount, application_date) {
+        let loanKey = Loan.makeKey([issuer, borrower, original_amount, application_date]);
+        let loan = await ctx.loanList.getLoan(loanKey);
+
+        if (loan.isRequested()) {
+            loan.setReject();
+        } else {
+            throw new Error('Loan application ' + issuer + borrower + ' is not in a valid state');
+        }
+
+        await ctx.loanList.updateLoan(loan);
+        return loan;
     }
 
 }
