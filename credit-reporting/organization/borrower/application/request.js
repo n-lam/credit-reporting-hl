@@ -55,7 +55,7 @@ async function main() {
 
         let loan = Loan.fromBuffer(issueResponse);
 
-        console.log(`${loan.application_date} : ${loan.borrower} requesting ${loan.original_amount} from ${loan.issuer} with ${repayment_amount} every ${repayment_period} days`);
+        console.log(`${loan.application_date} : ${loan.borrower} requesting ${loan.original_amount} from ${loan.issuer} with ${loan.repayment_amount} every ${loan.repayment_period} days`);
         console.log('Transaction complete.');
 
     } catch (error) {

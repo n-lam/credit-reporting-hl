@@ -79,7 +79,7 @@ class LoanContract extends Contract {
         let loan = await ctx.loanList.getLoan(loanKey);
 
         if (loan.isRequested()) {
-            loan.setReject();
+            loan.setRejected();
         } else {
             throw new Error('Loan application ' + issuer + borrower + ' is not in a valid state');
         }
