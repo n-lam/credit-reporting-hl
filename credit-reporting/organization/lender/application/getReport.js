@@ -1,28 +1,13 @@
-/*
-SPDX-License-Identifier: Apache-2.0
-*/
-
-/*
- * This application has 6 basic steps:
- * 1. Select an identity from a wallet
- * 2. Connect to network gateway
- * 3. Access NetCredit network
- * 4. Construct request to issue credit
- * 5. Submit transaction
- * 6. Process response
- */
-
 'use strict';
 
 // Bring key classes into scope, most importantly Fabric SDK network class
 const fs = require('fs');
 const yaml = require('js-yaml');
 const { FileSystemWallet, Gateway } = require('fabric-network');
-const CommercialPaper = require('../contract/lib/loan.js');
+const Loan = require('../contract/lib/loan.js');
 
 // A wallet stores a collection of identities for use
-//const wallet = new FileSystemWallet('../user/isabella/wallet');
-const wallet = new FileSystemWallet('../identity/user/hideyoshi/wallet');
+const wallet = new FileSystemWallet('../identity/user/isabella/wallet');
 
 // Main program function
 async function main() {
@@ -52,27 +37,23 @@ async function main() {
 
         await gateway.connect(connectionProfile, connectionOptions);
 
-        // Access PaperNet network
         console.log('Use network channel: mychannel.');
 
         const network = await gateway.getNetwork('mychannel');
 
-        // Get addressability to commercial paper contract
-        console.log('Use org.papernet.commercialpaper smart contract.');
+        console.log('Use org.creditnet.loan smart contract.');
 
         const contract = await network.getContract('loancontract');
 
-        // issue commercial paper
-        console.log('Submit commercial paper issue transaction.');
+        console.log('Submit request to get the credit report');
 
-        const issueResponse = await contract.submitTransaction('getReport', 'Lender', '00001', '2020-05-31', '2020-11-30', '5000000');
+        const issueResponse = await contract.submitTransaction('getReport');
 
         // process response
         console.log('Process issue transaction response.'+issueResponse);
 
-        let paper = CommercialPaper.fromBuffer(issueResponse);
+        let loanList = LoanList.fromBuffer(issueResponse);
 
-        console.log(`${paper.issuer} commercial paper : ${paper.paperNumber} successfully issued for value ${paper.faceValue}`);
         console.log('Transaction complete.');
 
     } catch (error) {
@@ -90,11 +71,11 @@ async function main() {
 }
 main().then(() => {
 
-    console.log('Issue program complete.');
+    console.log('Approval program complete.');
 
 }).catch((e) => {
 
-    console.log('Issue program exception.');
+    console.log('Approval program exception.');
     console.log(e);
     console.log(e.stack);
     process.exit(-1);

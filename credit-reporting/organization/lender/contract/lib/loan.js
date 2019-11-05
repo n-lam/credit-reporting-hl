@@ -22,7 +22,6 @@ class Loan extends State {
     }
 
     setRequested() {
-        console.log('loan contract: attempting to request')
         this.currentState = cpState.REQUESTED;
     }
 
@@ -70,17 +69,10 @@ class Loan extends State {
         return Buffer.from(JSON.stringify(this));
     }
 
-    /**
-     * Deserialize a state data to commercial paper
-     * @param {Buffer} data to form back into the object
-     */
     static deserialize(data) {
         return State.deserializeClass(data, Loan);
     }
 
-    /**
-     * Factory method to create a commercial paper object
-     */
     static createInstance(issuer, borrower, original_amount, application_date, repayment_period, repayment_amount) {
         return new Loan({issuer, borrower, original_amount, application_date, repayment_period, repayment_amount});
     }

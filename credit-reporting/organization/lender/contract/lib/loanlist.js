@@ -1,7 +1,3 @@
-/*
-SPDX-License-Identifier: Apache-2.0
-*/
-
 'use strict';
 
 // Utility class for collections of ledger states --  a state list
@@ -29,9 +25,15 @@ class LoanList extends StateList {
     }
 
     async getAllLoans() {
-        this.supportedClasses.forEach(element => {
-            console.log(element);
-        });
+        return this.supportedClasses;
+    }
+
+    toBuffer() {
+        return Buffer.from(JSON.stringify(this));
+    }
+
+    static fromBuffer(buffer) {
+        return Loan.deserialize(buffer);
     }
 }
 

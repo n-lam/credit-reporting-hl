@@ -57,7 +57,7 @@ class LoanContract extends Contract {
     }
 
     async getReport(ctx) {
-        ctx.loanList.getAllLoans();
+        return ctx.loanList;
     }
 
     async approve(ctx, issuer, borrower, original_amount, application_date) {
@@ -79,7 +79,7 @@ class LoanContract extends Contract {
         let loan = await ctx.loanList.getLoan(loanKey);
 
         if (loan.isRequested()) {
-            loan.setReject();
+            loan.setRejected();
         } else {
             throw new Error('Loan application ' + issuer + borrower + ' is not in a valid state');
         }
@@ -88,6 +88,21 @@ class LoanContract extends Contract {
         return loan;
     }
 
+    async repay(ctx, issuer, borrower, original_amount, application_date) {
+        let loanKey = Loan.makeKey([issuer, borrower, original_amount, application_date]);
+        let loan = await ctx.loanList.getLoan(loanKey);
+
+        console.log(`Loan current_state = ${loan.currentState}`);
+
+        if (loan.isApproved()) {
+            loan.setRepaid();
+        } else {
+            throw new Error('Loan application ' + issuer + borrower + ' is not in a valid state');
+        }
+
+        await ctx.loanList.updateLoan(loan);
+        return loan;
+    }
 }
 
 module.exports = LoanContract;

@@ -12,7 +12,7 @@ cd "${DIR}/organization/lender/configuration/cli"
 docker-compose -f docker-compose.yml up -d cliLender
 
 echo "
- Install and Instantiate a Smart Contract in either langauge
+ Install and Instantiate a Smart Contract
 
  JavaScript Client Aplications:
 
@@ -22,5 +22,17 @@ echo "
  To reject the loan application  :   node reject.js
 
 "
+
+echo "Installing chaincode..."
+
+docker exec cliLender peer chaincode install -n loancontract -v 0 -p /opt/gopath/src/github.com/contract -l node
+
+echo "done."
+
+echo "Instantiating chaincode..."
+
+docker exec cliLender peer chaincode instantiate -n loancontract -v 0 -l node -c '{"Args":["org.creditnet.loan:instantiate"]}' -C mychannel -P "AND ('Org1MSP.member')"
+
+echo "done."
 
 echo "Suggest that you change to this dir>  cd ${DIR}/organization/lender/"

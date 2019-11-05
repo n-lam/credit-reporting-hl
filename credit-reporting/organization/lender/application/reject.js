@@ -8,7 +8,7 @@ const Loan = require('../contract/lib/loan.js');
 
 // A wallet stores a collection of identities for use
 //const wallet = new FileSystemWallet('../user/isabella/wallet');
-const wallet = new FileSystemWallet('../identity/user/balaji/wallet');
+const wallet = new FileSystemWallet('../identity/user/isabella/wallet');
 
 // Main program function
 async function main() {
@@ -21,7 +21,7 @@ async function main() {
 
         // Specify userName for network access
         // const userName = 'isabella.issuer@magnetocorp.com';
-        const userName = 'Admin@org1.example.com';
+        const userName = 'User1@org1.example.com';
 
         // Load connection profile; will be used to locate a gateway
         let connectionProfile = yaml.safeLoad(fs.readFileSync('../gateway/networkConnection.yaml', 'utf8'));

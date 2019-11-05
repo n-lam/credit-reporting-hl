@@ -25,9 +25,15 @@ class LoanList extends StateList {
     }
 
     async getAllLoans() {
-        this.supportedClasses.forEach(element => {
-            console.log(element);
-        });
+        return this.supportedClasses;
+    }
+
+    toBuffer() {
+        return Buffer.from(JSON.stringify(this));
+    }
+
+    static fromBuffer(buffer) {
+        return LoanList.deserialize(buffer);
     }
 }
 
