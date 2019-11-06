@@ -7,11 +7,25 @@ const { FileSystemWallet, Gateway } = require('fabric-network');
 const Loan = require('../contract/lib/loan.js');
 
 // A wallet stores a collection of identities for use
-//const wallet = new FileSystemWallet('../user/isabella/wallet');
 const wallet = new FileSystemWallet('../identity/user/isabella/wallet');
 
 // Main program function
 async function main() {
+
+    if (process.argv.length != 6) {
+        console.log('Error: Incorrect number of arguments');
+        console.log(`Usage: ${process.argv[0]} ${process.argv[1]} <lender> <borrower> <original_amount> <settlement_date> <repayment_period> <repayment_amount>`);
+        return;
+    }
+
+    let lender = process.argv[2];
+    let borrower = process.argv[3];
+    let original_amount = process.argv[4];
+    let settlement_date = process.argv[5];
+    let repayment_period = process.argv[6];
+    let repayment_amount = process.argv[7];
+
+    console.log(`Requesting the following loan => ${lender}:${borrower}:${original_amount}:${settlement_date}:${repayment_period}:${repayment_amount}`);
 
     // A gateway defines the peers used to access Fabric networks
     const gateway = new Gateway();
@@ -20,7 +34,6 @@ async function main() {
     try {
 
         // Specify userName for network access
-        // const userName = 'isabella.issuer@magnetocorp.com';
         const userName = 'User1@org1.example.com';
 
         // Load connection profile; will be used to locate a gateway
@@ -48,7 +61,7 @@ async function main() {
 
         console.log('Submit loan request transaction.');
 
-        const issueResponse = await contract.submitTransaction('request', 'Lender', 'Borrower', '100', '2019-11-03', '28', '5');
+        const issueResponse = await contract.submitTransaction('request', lender, borrower, original_amount, settlement_date, repayment_period, repayment_amount);
 
         // process response
         console.log('Process request transaction response.'+issueResponse);

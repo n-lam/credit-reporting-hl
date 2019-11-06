@@ -1,5 +1,13 @@
 'use strict';
 
+const cpState = [
+    'REQUESTED',
+    'APPROVED',
+    'REJECTED',
+    'REPAID',
+    'DEFAULT'
+];
+
 // Bring key classes into scope, most importantly Fabric SDK network class
 const fs = require('fs');
 const yaml = require('js-yaml');
@@ -7,10 +15,23 @@ const { FileSystemWallet, Gateway } = require('fabric-network');
 const Loan = require('../contract/lib/loan.js');
 
 // A wallet stores a collection of identities for use
-const wallet = new FileSystemWallet('../identity/user/isabella/wallet');
+const wallet = new FileSystemWallet('../identity/user/balaji/wallet');
 
 // Main program function
 async function main() {
+
+    if (process.argv.length != 6) {
+        console.log('Error: Incorrect number of arguments');
+        console.log(`Usage: ${process.argv[0]} ${process.argv[1]} <lender> <borrower> <original_amount> <settlement_date>`);
+        return;
+    }
+
+    let lender = process.argv[2];
+    let borrower = process.argv[3];
+    let original_amount = process.argv[4];
+    let settlement_date = process.argv[5];
+
+    console.log(`Getting report for ${lender}:${borrower}:${original_amount}:${settlement_date}`);
 
     // A gateway defines the peers used to access Fabric networks
     const gateway = new Gateway();
@@ -19,8 +40,7 @@ async function main() {
     try {
 
         // Specify userName for network access
-        // const userName = 'isabella.issuer@magnetocorp.com';
-        const userName = 'User1@org1.example.com';
+        const userName = 'Admin@org1.example.com';
 
         // Load connection profile; will be used to locate a gateway
         let connectionProfile = yaml.safeLoad(fs.readFileSync('../gateway/networkConnection.yaml', 'utf8'));
@@ -47,12 +67,15 @@ async function main() {
 
         console.log('Submit request to get the credit report');
 
-        const issueResponse = await contract.submitTransaction('getReport');
+        const issueResponse = await contract.evaluateTransaction('getReport', lender, borrower, original_amount, settlement_date);
 
         // process response
         console.log('Process issue transaction response.'+issueResponse);
 
-        let loanList = LoanList.fromBuffer(issueResponse);
+        let loan = Loan.fromBuffer(issueResponse);
+
+        console.log(`Loan Key: ${loan.issuer}:${loan.borrower}:\$${loan.original_amount}:${loan.application_date}`);
+        console.log(`${cpState[loan.currentState]}`);
 
         console.log('Transaction complete.');
 
@@ -71,11 +94,11 @@ async function main() {
 }
 main().then(() => {
 
-    console.log('Approval program complete.');
+    console.log('GetReport program complete.');
 
 }).catch((e) => {
 
-    console.log('Approval program exception.');
+    console.log('GetReport program exception.');
     console.log(e);
     console.log(e.stack);
     process.exit(-1);

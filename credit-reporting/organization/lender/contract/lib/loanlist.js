@@ -33,7 +33,7 @@ class LoanList extends StateList {
     }
 
     static fromBuffer(buffer) {
-        return Loan.deserialize(buffer);
+        return LoanList.deserialize(buffer);
     }
 }
 

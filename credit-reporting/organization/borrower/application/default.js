@@ -23,7 +23,7 @@ async function main() {
     let original_amount = process.argv[4];
     let settlement_date = process.argv[5];
 
-    console.log(`Repay the following loan => ${lender}:${borrower}:${original_amount}:${settlement_date}`);
+    console.log(`Defaulting for the following loan => ${lender}:${borrower}:${original_amount}:${settlement_date}`);
 
     // A gateway defines the peers used to access Fabric networks
     const gateway = new Gateway();
@@ -59,14 +59,14 @@ async function main() {
 
         console.log('Submit loan request transaction.');
 
-        const issueResponse = await contract.submitTransaction('repay', 'Lender', 'Borrower', '100', '2019-11-03', '28', '5');
+        const issueResponse = await contract.submitTransaction('defaulted', lender, borrower, original_amount, settlement_date);
 
         // process response
         console.log('Process request transaction response.'+issueResponse);
 
         let loan = Loan.fromBuffer(issueResponse);
 
-        console.log(`${loan.borrower}:${loan.issuer}:${loan.application_date}:${loan.original_amount}:${loan.repayment_amount}:${loan.repayment_period} has been repaid`);
+        console.log(`${loan.borrower}:${loan.issuer}:${loan.application_date}:${loan.original_amount}:${loan.repayment_amount}:${loan.repayment_period} has defaulted`);
         console.log('Transaction complete.');
 
     } catch (error) {
@@ -84,11 +84,11 @@ async function main() {
 }
 main().then(() => {
 
-    console.log('Repay program complete.');
+    console.log('Default program complete.');
 
 }).catch((e) => {
 
-    console.log('Repay program exception.');
+    console.log('Default program exception.');
     console.log(e);
     console.log(e.stack);
     process.exit(-1);
